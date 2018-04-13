@@ -92,6 +92,7 @@ def main():
         text = font.render("Health: {}    Attack LvL: {}    Defense LvL: {}".format(
             player.health, player.attack_damage, player.defense), True, (230, 230, 230))
         text_rect = text.get_rect()
+        text_rect.bottomright = (width, height)
         screen.blit(text, text_rect)
         pygame.display.flip()
 

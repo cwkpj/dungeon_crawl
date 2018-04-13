@@ -1,6 +1,7 @@
 import pygame, random
 from message import *
 
+
 class Player(pygame.sprite.Sprite):
     def __init__(self, path, pos, facing_r):
         super().__init__()
@@ -36,7 +37,7 @@ class Player(pygame.sprite.Sprite):
             if pygame.sprite.collide_rect(self, self.level.start):
                 return -1
             if pygame.sprite.collide_rect(self, self.level.chest):
-                self.level.messages.add(Message(self.level.chest.give_bonus(self), self.level.chest.rect.center))
+                self.level.messages.add(MovingMessage(self.level.chest.give_bonus(self), self.level.chest.rect.center))
             else:
                 self.movement[0] *= -1
                 self.movement[1] *= -1
@@ -52,7 +53,7 @@ class Player(pygame.sprite.Sprite):
     def defend(self, damage):
         if random.randint(1, 20) > self.defense:
             self.health -= damage
-            self.level.messages.add(Message("-{}".format(damage), self.rect.topleft, (255, 0, 0)))
+            self.level.messages.add(MovingMessage("-{}".format(damage), self.rect.topleft, (255, 0, 0)))
             if self.health <= 0:
                 return True
 

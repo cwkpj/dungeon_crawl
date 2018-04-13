@@ -12,6 +12,16 @@ class Message(pygame.sprite.Sprite):
 
     def update(self):
         self.time += 1
-        self.rect.move_ip((0, -1))
         if self.time > 120:
             self.kill()
+
+
+class MovingMessage(Message):
+    def __init__(self, text, pos, color=(230, 230, 230)):
+        super().__init__(text, pos, color)
+
+    def update(self):
+        super().update()
+        self.rect.move_ip((0, -1))
+
+

@@ -2,6 +2,7 @@ import pygame
 import random
 from message import *
 
+
 class Enemy(pygame.sprite.Sprite):
     def __init__(self, image, pos, level):
         super().__init__()
