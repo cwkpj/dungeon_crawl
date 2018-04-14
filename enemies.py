@@ -19,7 +19,7 @@ class Enemy(pygame.sprite.Sprite):
         self.target = None
 
     def update(self):
-        if pygame.sprite.collide_rect(self, self.level.player):
+        if pygame.sprite.collide_rect(self, self.level.player) and self.level.player.alive:
             self.target = self.level.player
         else:
             self.target = None

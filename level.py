@@ -64,7 +64,8 @@ class RandomLevel(Level):
             self.game_map.append(["w"] * ((screen_info.current_h // 32) + 1))
         fnum = int((len(self.game_map) * len(self.game_map[0])) * mult)
         count = 0
-        tile = [random.randint(2, len(self.game_map)-3), random.randint(2, len(self.game_map[0])-3)]
+        #tile = [random.randint(2, len(self.game_map)-3), random.randint(2, len(self.game_map[0])-3)]
+        tile = [len(self.game_map)//2, len(self.game_map[0])//2]
         while count < fnum:
             if self.game_map[tile[0]][tile[1]] != "f":
                 self.game_map[tile[0]][tile[1]] = "f"

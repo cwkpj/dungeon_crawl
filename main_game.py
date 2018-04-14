@@ -73,10 +73,10 @@ def main():
                     player.change_x(-32)
                 elif event.key == K_a:
                     player.attack()
-                '''# Go up one level
+                # Go up one level
                 elif event.key == K_w:
                     if level_num == len(levels)-1:
-                        levels.append(RandomLevel(player, images, .5))
+                        levels.append(RandomLevel(player, images, .5, 2 + 2 * level_num))
                     level_num += 1
                     current_level = levels[level_num]
                     player.up_level(current_level)
@@ -85,7 +85,7 @@ def main():
                     if level_num > 0:
                         level_num -= 1
                         current_level = levels[level_num]
-                        player.back_level(current_level)'''
+                        player.back_level(current_level)
         change_level(current_level.update())
         screen.fill(color)
         current_level.draw(screen)
