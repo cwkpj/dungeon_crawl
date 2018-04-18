@@ -4,11 +4,13 @@ from message import *
 
 
 class Enemy(pygame.sprite.Sprite):
-    def __init__(self, image, pos, level):
+    def __init__(self, path, pos, level):
         super().__init__()
-        self.image = pygame.image.load(image)
+        self.path = path
+        self.image = pygame.image.load(path)
         self.rect = self.image.get_rect()
         self.rect.center = pos
+        self.heading = None
         self.movement = pygame.math.Vector2(0, 2)
         self.movement.rotate_ip(random.randint(0, 360))
         self.level = level
@@ -48,3 +50,14 @@ class Enemy(pygame.sprite.Sprite):
                     self.level.messages.add(Message("Exit Unlocked!", self.rect.center))
                     self.level.exit.unlock()
                 return True
+
+    def save(self):
+        self.image = None
+        self.level = None
+        self.heading = [self.movement[0], self.movement[1]]
+        self.movement = None
+
+    def load(self, level):
+        self.image = pygame.image.load(self.path)
+        self.level = level
+        self.movement = pygame.math.Vector2(self.heading[0], self.heading[1])

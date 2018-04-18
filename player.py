@@ -39,8 +39,9 @@ class Player(pygame.sprite.Sprite):
                     return 1
                 if pygame.sprite.collide_rect(self, self.level.start):
                     return -1
-                if pygame.sprite.collide_rect(self, self.level.chest):
+                if self.level.chest is not None and pygame.sprite.collide_rect(self, self.level.chest):
                     self.level.messages.add(MovingMessage(self.level.chest.give_bonus(self), self.level.chest.rect.center))
+                    self.level.chest = None
                 else:
                     self.movement[0] *= -1
                     self.movement[1] *= -1
@@ -86,3 +87,11 @@ class Player(pygame.sprite.Sprite):
 
     def change_y(self, change):
         self.movement[1] = change
+
+    def save(self):
+        self.image = None
+        self.level = None
+        self.enemies = None
+
+    def load(self):
+        self.image = pygame.image.load(self.path)

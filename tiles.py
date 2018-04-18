@@ -4,14 +4,21 @@ import pygame
 
 
 class Tile(pygame.sprite.Sprite):
-    def __init__(self, image, pos):
+    def __init__(self, path, pos):
         super().__init__()
-        self.image = pygame.image.load(image)
+        self.path = path
+        self.image = pygame.image.load(path)
         self.rect = self.image.get_rect()
         self.rect.topleft = pos
 
     def scroll(self, change):
         self.rect.move_ip(change)
+
+    def save(self):
+        self.image = None
+
+    def load(self):
+        self.image = pygame.image.load(self.path)
 
 
 class Door(Tile):
@@ -22,6 +29,9 @@ class Door(Tile):
 
     def unlock(self):
         self.unlocked = True
+        self.image = pygame.image.load(self.images[self.unlocked])
+
+    def load(self):
         self.image = pygame.image.load(self.images[self.unlocked])
 
 
