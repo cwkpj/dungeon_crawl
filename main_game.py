@@ -25,9 +25,8 @@ player = Player("images/player/superhero.gif", (16, 16), False)
 levels = []
 level_num = 0
 current_level = None
-'''for font in pygame.font.get_fonts():
-    print(font)'''
 font = pygame.font.SysFont('oldenglishtext', 32)
+debug = False
 
 
 def change_level(change):
@@ -46,6 +45,9 @@ def change_level(change):
 
 
 def load_game():
+    # Loads saved game state using pickle. The
+    # .load() methods re-create any image objects
+    # since pickle cannot store Surface objects.
     global player, levels, level_num, current_level
     if os.path.isfile("save"):
         f = open("save", "rb")
@@ -63,6 +65,10 @@ def load_game():
 
 
 def save_game():
+    # Saves current game state using pickle. The
+    # .save() methods remove any image objects
+    # prior to dumping since pickle cannot
+    # store Surface objects.
     f = open("save", "wb")
     player.save()
     pickle.dump(player, f)
@@ -73,6 +79,7 @@ def save_game():
     f.close()
 
 
+# initializes globals to starting state
 def restart():
     global player, levels, level_num, current_level
     player = Player("images/player/superhero.gif", (16, 16), False)
@@ -90,10 +97,12 @@ def main():
     while True:
         clock.tick(60)
         for event in pygame.event.get():
+            # save game and exit
             if event.type == QUIT:
                 save_game()
                 sys.exit()
             if event.type == KEYDOWN:
+                # confirm/ exit restart if triggered
                 if restart_pressed:
                     if event.key == K_RETURN:
                         restart()
@@ -101,10 +110,12 @@ def main():
                     elif event.key == K_ESCAPE:
                         restart_pressed = False
                     continue
+                # screen controls
                 if event.key == K_f:
                     screen = pygame.display.set_mode(size, FULLSCREEN)
                 elif event.key == K_ESCAPE:
                     screen = pygame.display.set_mode(size)
+                # player movement controls
                 elif event.key == K_UP:
                     player.change_y(-32)
                 elif event.key == K_DOWN:
@@ -115,21 +126,25 @@ def main():
                     player.change_x(-32)
                 elif event.key == K_a:
                     player.attack()
+                # initiates restart prompt
                 elif event.key == K_r:
                     restart_pressed = True
-                # Go up one level
-                elif event.key == K_w:
-                    if level_num == len(levels)-1:
-                        levels.append(RandomLevel(player, images, .5, 2 + 2 * level_num))
-                    level_num += 1
-                    current_level = levels[level_num]
-                    player.up_level(current_level)
-                # Go down one level
-                elif event.key == K_s:
-                    if level_num > 0:
-                        level_num -= 1
+                # debugging related controls
+                if debug:
+                    # Go up one level
+                    if event.key == K_w:
+                        if level_num == len(levels)-1:
+                            levels.append(RandomLevel(player, images, .5, 2 + 2 * level_num))
+                        level_num += 1
                         current_level = levels[level_num]
-                        player.back_level(current_level)
+                        player.up_level(current_level)
+                    # Go down one level
+                    elif event.key == K_s:
+                        if level_num > 0:
+                            level_num -= 1
+                            current_level = levels[level_num]
+                            player.back_level(current_level)
+        # update the level if not is restart mode
         if not restart_pressed:
             change_level(current_level.update())
         screen.fill(color)
