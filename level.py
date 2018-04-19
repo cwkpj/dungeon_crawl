@@ -12,7 +12,6 @@ class Level(pygame.sprite.Sprite):
         self.enemies = pygame.sprite.Group()
         self.messages = pygame.sprite.Group()
         self.player = player
-        self.game_map = []
         self.chest = Chest("images/chest.gif", (0, 0))
         self.walls.add(self.chest)
         self.start_pos = (0, 0)
@@ -64,57 +63,63 @@ class RandomLevel(Level):
     def draw(self, screen):
         super().draw(screen)
 
-    def place_player(self):
-        for i in range(len(self.game_map)):
-            for j in range(1, len(self.game_map[0])):
-                if self.game_map[i][j] == "f":
+    def place_player(self, game_map):
+        for i in range(len(game_map)):
+            for j in range(1, len(game_map[0])):
+                if game_map[i][j] == "f":
                     self.start_pos = (i * 32, j * 32)
-                    self.game_map[i][j - 1] = "s"
+                    game_map[i][j - 1] = "s"
                     return
 
-    def place_exit(self):
-        for i in range(len(self.game_map) - 2, 0, -1):
-            for j in range(1, len(self.game_map[0]) - 1):
-                if self.game_map[i][j + 1] == "f":
+    def place_exit(self, game_map):
+        for i in range(len(game_map) - 2, 0, -1):
+            for j in range(1, len(game_map[0]) - 1):
+                if game_map[i][j + 1] == "f":
                     self.end_pos = (i * 32, (j + 1) * 32)
-                    self.game_map[i][j] = "e"
+                    game_map[i][j] = "e"
                     return
     
     def generate_level(self, images, mult, enemy_num):
         screen_info = pygame.display.Info()
+        game_map = []
+        # initialize entire map to walls
         for i in range((screen_info.current_w // 32) + 1):
-            self.game_map.append(["w"] * ((screen_info.current_h // 32) + 1))
-        fnum = int((len(self.game_map) * len(self.game_map[0])) * mult)
+            game_map.append(["w"] * ((screen_info.current_h // 32) + 1))
+        # calculate amount of tiles to convert into floor tiles
+        fnum = int((len(game_map) * len(game_map[0])) * mult)
+        # current number of floor tiles
         count = 0
-        #tile = [random.randint(2, len(self.game_map)-3), random.randint(2, len(self.game_map[0])-3)]
-        tile = [len(self.game_map)//2, len(self.game_map[0])//2]
+        # starting tile for dungeon generation
+        tile = [len(game_map)//2, len(game_map[0])//2]
         while count < fnum:
-            if self.game_map[tile[0]][tile[1]] != "f":
-                self.game_map[tile[0]][tile[1]] = "f"
+            if game_map[tile[0]][tile[1]] != "f":
+                game_map[tile[0]][tile[1]] = "f"
                 count += 1
             move = random.randint(1, 4)
             if move == 1 and tile[0] > 1:  # move north
                 tile[0] -= 1
-            elif move == 2 and tile[0] < (len(self.game_map) - 3):  # move south
+            elif move == 2 and tile[0] < (len(game_map) - 3):  # move south
                 tile[0] += 1
-            elif move == 3 and tile[1] < (len(self.game_map[0]) - 3):  # move east
+            elif move == 3 and tile[1] < (len(game_map[0]) - 3):  # move east
                 tile[1] += 1
             elif move == 4 and tile[1] > 1:  # move west
                 tile[1] -= 1
-        self.place_player()
-        self.place_exit()
-        for i in range(len(self.game_map)):
-            for j in range(len(self.game_map[i])):
-                if self.game_map[i][j] == "w":
+        self.place_player(game_map)
+        self.place_exit(game_map)
+        # create tiles based on the contents of the map list
+        for i in range(len(game_map)):
+            for j in range(len(game_map[i])):
+                if game_map[i][j] == "w":
                     self.walls.add(Tile(images["w"], (i * 32, j * 32)))
-                elif self.game_map[i][j] == "f":
+                elif game_map[i][j] == "f":
                     self.floor.add(Tile(images["f"], (i * 32, j * 32)))
-                elif self.game_map[i][j] == "s":
+                elif game_map[i][j] == "s":
                     self.start = Door(images["s"], (i * 32, j * 32), True)
                     self.walls.add(self.start)
-                elif self.game_map[i][j] == "e":
+                elif game_map[i][j] == "e":
                     self.exit = Door(images["e"], (i * 32, j * 32), False)
                     self.walls.add(self.exit)
+        # add in some enemies
         for i in range(enemy_num):
             self.enemies.add(Enemy("images/monsters/bat.gif", random.choice(self.floor.sprites()).rect.center, self))
         self.chest.rect.center = random.choice(self.floor.sprites()).rect.center

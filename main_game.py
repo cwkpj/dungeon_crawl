@@ -26,7 +26,7 @@ levels = []
 level_num = 0
 current_level = None
 font = pygame.font.SysFont('oldenglishtext', 32)
-debug = False
+debug = True
 
 
 def change_level(change):
