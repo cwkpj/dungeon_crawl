@@ -11,6 +11,7 @@ class Level(pygame.sprite.Sprite):
         self.floor = pygame.sprite.Group()
         self.enemies = pygame.sprite.Group()
         self.messages = pygame.sprite.Group()
+        self.effects = pygame.sprite.Group()
         self.player = player
         self.chest = Chest("images/chest.gif", (0, 0))
         self.walls.add(self.chest)
@@ -21,6 +22,7 @@ class Level(pygame.sprite.Sprite):
 
     def update(self):
         self.enemies.update()
+        self.effects.update()
         self.messages.update()
         return self.player.update()
     
@@ -29,6 +31,7 @@ class Level(pygame.sprite.Sprite):
         self.enemies.draw(screen)
         self.player.draw(screen)
         self.walls.draw(screen)
+        self.effects.draw(screen)
         self.messages.draw(screen)
 
     def save(self):
@@ -38,6 +41,8 @@ class Level(pygame.sprite.Sprite):
             f.save()
         for w in self.walls:
             w.save()
+        for f in self.effects:
+            f.save()
         for m in self.messages:
             m.save()
         self.player = None
@@ -49,6 +54,8 @@ class Level(pygame.sprite.Sprite):
             f.load()
         for w in self.walls:
             w.load()
+        for f in self.effects:
+            f.load()
         for m in self.messages:
             m.load()
         self.player = player

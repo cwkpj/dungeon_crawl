@@ -8,6 +8,7 @@ from tiles import *
 from player import *
 from enemies import *
 from level import *
+from fire import *
 
 import sys
 
@@ -94,6 +95,7 @@ def main():
     if not load_game():
         restart()
     restart_pressed = False
+    on_fire = False
     while True:
         clock.tick(60)
         for event in pygame.event.get():

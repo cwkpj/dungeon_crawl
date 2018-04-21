@@ -1,6 +1,7 @@
 import pygame
 import random
 from message import *
+from fire import *
 
 
 class Enemy(pygame.sprite.Sprite):
@@ -45,6 +46,7 @@ class Enemy(pygame.sprite.Sprite):
             self.health -= damage
             if self.health <= 0:
                 self.kill()
+                self.level.effects.add(Fire((self.rect.midbottom)))
                 if len(self.level.enemies) == 0 and not self.level.exit.unlocked:
                     self.level.messages.add(Message("Level Cleared,", (self.rect.centerx, self.rect.centery-30)))
                     self.level.messages.add(Message("Exit Unlocked!", self.rect.center))
